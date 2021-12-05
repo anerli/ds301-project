@@ -4,6 +4,7 @@ import torch
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from .preprocessor import TimeSeriesPreprocessor
+from .backtester import calculate_return
 
 
 
@@ -11,6 +12,11 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
     model.eval()
     predictY = model(tsp.X)
     actualY = tsp.Y
+
+    # Caculate loss
+    criterion = torch.nn.MSELoss()
+    loss = criterion(predictY, actualY)
+    print('Testing Loss:', loss.item())
 
     # Convert torch tensors to numpy arrays
     predictY = predictY.data.numpy()
@@ -23,6 +29,16 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
 
     original_index_adj = tsp.original_index[tsp.window:]
     index_map = lambda i: original_index_adj[i]
+
+    y_pred = predictY.reshape((-1,)).tolist()
+    y_actual = actualY.reshape((-1,)).tolist()
+    
+    print(y_actual)
+
+    print('Best possible return:', calculate_return(y_actual, y_actual))
+    print('Return from buying and holding:', y_actual[-1] / y_actual[0])
+    print('Return using prediction:', calculate_return(y_pred, y_actual))
+    
 
     plot(predictY, actualY, tsp.train_size, index_map)
 

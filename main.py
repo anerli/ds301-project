@@ -4,11 +4,8 @@ from tsnn.models import LSTM
 from tsnn.trainer import train
 from tsnn.tester import test
 
+
 msft = get_df('MSFT')
-
-date_index = msft.index
-print(msft)
-
 
 # X, Y = preprocess(msft, 4)
 tsp = TimeSeriesPreprocessor(window=4, test_ratio=0.2)
@@ -19,9 +16,10 @@ lstm = LSTM(num_classes=1, input_size=1, hidden_size=2, num_layers=1)
 
 train(lstm, tsp.trainX, tsp.trainY, num_epochs=500, learning_rate=0.01)
 
-date_index_adj = date_index[tsp.window:]
+date_index_adj = tsp.original_index[tsp.window:]
 
 mapper = lambda i: date_index_adj[i]
 
 #test(lstm, tsp.X, tsp.Y, tsp.train_size, tsp.scaler, mapper)
 test(lstm, tsp)
+
