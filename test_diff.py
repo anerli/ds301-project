@@ -2,7 +2,7 @@ from atc_toolbox.test_suite.accessor import get_df
 from tsnn.preprocessor import TimeSeriesPreprocessor
 from tsnn.models import LSTM
 from tsnn.trainer import train
-from tsnn.tester import test
+from test import test
 
 msft = get_df('MSFT')
 
