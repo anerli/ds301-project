@@ -3,8 +3,31 @@ import matplotlib.pyplot as plt
 import torch
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
+from .preprocessor import TimeSeriesPreprocessor
 
-def test(model: torch.nn.Module, X: torch.autograd.Variable, Y: torch.autograd.Variable, train_size: int, scaler: MinMaxScaler, index_map = lambda x: x):
+
+
+def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
+    model.eval()
+    predictY = model(tsp.X)
+    actualY = tsp.Y
+
+    # Convert torch tensors to numpy arrays
+    predictY = predictY.data.numpy()
+    actualY = actualY.data.numpy()
+
+    # Transform values back to original sizes
+    scaler = tsp.scaler
+    predictY = scaler.inverse_transform(predictY)
+    actualY = scaler.inverse_transform(actualY)
+
+    original_index_adj = tsp.original_index[tsp.window:]
+    index_map = lambda i: original_index_adj[i]
+
+    plot(predictY, actualY, tsp.train_size, index_map)
+
+
+def test_old(model: torch.nn.Module, X: torch.autograd.Variable, Y: torch.autograd.Variable, train_size: int, scaler: MinMaxScaler, index_map = lambda x: x):
     model.eval()
     predictY = model(X)
     actualY = Y

@@ -23,4 +23,5 @@ date_index_adj = date_index[tsp.window:]
 
 mapper = lambda i: date_index_adj[i]
 
-test(lstm, tsp.X, tsp.Y, tsp.train_size, tsp.scaler, mapper)
+#test(lstm, tsp.X, tsp.Y, tsp.train_size, tsp.scaler, mapper)
+test(lstm, tsp)
