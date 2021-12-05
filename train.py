@@ -1,7 +1,7 @@
 from atc_toolbox.test_suite.accessor import get_df
-from preprocessor import TimeSeriesPreprocessor
-from models import LSTM
-from trainer import train
+from tsnn.preprocessor import TimeSeriesPreprocessor
+from tsnn.models import LSTM
+from tsnn.trainer import train
 import pickle
 import torch
 

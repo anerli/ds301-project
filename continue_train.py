@@ -1,6 +1,6 @@
 import pickle
 import torch
-from trainer import train
+from tsnn.trainer import train
 
 with open('tsp.pkl', 'rb') as f:
     tsp = pickle.load(f)

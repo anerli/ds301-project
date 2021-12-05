@@ -1,4 +1,4 @@
-from tester import test
+from tsnn.tester import test
 import pickle
 import torch
 
