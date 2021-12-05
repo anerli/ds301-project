@@ -11,6 +11,7 @@ class TimeSeriesPreprocessor:
         self.test_ratio = test_ratio
 
     def process(self, df):
+        self.original_index = df.index
         df.index = list(range(len(df)))
         data = df['Close']
         data = np.array(data)
