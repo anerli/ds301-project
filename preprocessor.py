@@ -16,8 +16,8 @@ class TimeSeriesPreprocessor:
         data = np.array(data)
         # Reshape so shape is (n_samples, n_features) (just one feature)
         data = data.reshape((-1, 1))
-        sc = MinMaxScaler()
-        data = sc.fit_transform(data)
+        self.scaler = MinMaxScaler()
+        data = self.scaler.fit_transform(data)
 
         x, y = TimeSeriesPreprocessor.sliding(data, self.window)
 

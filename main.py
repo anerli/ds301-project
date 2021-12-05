@@ -2,6 +2,7 @@ from atc_toolbox.test_suite.accessor import get_df
 from preprocessor import TimeSeriesPreprocessor
 from models import LSTM
 from trainer import train
+from test import test
 
 msft = get_df('MSFT')
 print(msft)
@@ -15,3 +16,4 @@ lstm = LSTM(num_classes=1, input_size=1, hidden_size=2, num_layers=1)
 
 train(lstm, tsp.trainX, tsp.trainY, num_epochs=2000, learning_rate=0.01)
 
+test(lstm, tsp.X, tsp.Y, tsp.train_size, tsp.scaler)
