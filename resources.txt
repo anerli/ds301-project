@@ -1,0 +1,7 @@
+https://www.crosstab.io/articles/time-series-pytorch-lstm
+
+https://colab.research.google.com/github/dlmacedo/starter-academic/blob/master/content/courses/deeplearning/notebooks/pytorch/Time_Series_Prediction_with_LSTM_Using_PyTorch.ipynb
+
+https://towardsdatascience.com/building-rnn-lstm-and-gru-for-time-series-using-pytorch-a46e5b094e7b
+
+https://towardsdatascience.com/introducing-pytorch-forecasting-64de99b9ef46
