@@ -1,21 +1,24 @@
 import matplotlib.pyplot as plt
 
-def test(model, X, Y, train_size, scaler):
+def test(model, X, Y, train_size, scaler, index_map = lambda x: x):
     model.eval()
-    train_predict = model(X)
+    predictY = model(X)
 
-    data_predict = train_predict.data.numpy()
-    dataY_plot = Y.data.numpy()
+    predictY = predictY.data.numpy()
+    actualY = Y.data.numpy()
 
-    data_predict = scaler.inverse_transform(data_predict)
-    dataY_plot = scaler.inverse_transform(dataY_plot)
+    predictY = scaler.inverse_transform(predictY)
+    actualY = scaler.inverse_transform(actualY)
+
+    plot_indices = list(range(len(actualY)))
+    plot_indices = [index_map(idx) for idx in plot_indices]
 
     plt.figure(figsize=(16,9))
-    plt.axvline(x=train_size, c='r', linestyle='--')
+    plt.axvline(x=index_map(train_size), c='r', linestyle='--')
 
     plt.ylabel('Close Price ($)')
     plt.xlabel('Day')
-    plt.plot(dataY_plot, c='blue', label='Actual')
-    plt.plot(data_predict, c='magenta', label='Prediction', linestyle='-')
+    plt.plot(plot_indices, actualY, c='blue', label='Actual')
+    plt.plot(plot_indices, predictY, c='magenta', label='Prediction', linestyle='-')
     plt.legend()
     plt.show()
