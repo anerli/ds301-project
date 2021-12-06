@@ -30,8 +30,8 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor, plot_results=False
     original_index_adj = tsp.original_index[tsp.window:]
     index_map = lambda i: original_index_adj[i]
 
-    y_pred = predictY.reshape((-1,)).tolist()
-    y_actual = actualY.reshape((-1,)).tolist()
+    y_pred = predictY.reshape((-1,)).tolist()[tsp.train_size:]
+    y_actual = actualY.reshape((-1,)).tolist()[tsp.train_size:]
     
     #print(y_actual)
 
@@ -44,7 +44,10 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor, plot_results=False
     print('Return using prediction:', calculate_return(y_pred, y_actual))
     
 
-    if plot_results: plot(predictY, actualY, tsp.train_size, index_map)
+    if plot_results:
+        print('Plotting results') 
+        plot(predictY, actualY, tsp.train_size, index_map)
+    
 
     return best, buyhold, ret
 

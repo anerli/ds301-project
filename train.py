@@ -1,6 +1,7 @@
+import math
 from atc_toolbox.test_suite.accessor import get_df, get_symbols
 from tsnn.preprocessor import TimeSeriesPreprocessor
-from tsnn.models import LSTM
+from tsnn.models import LSTM#, RNN
 from tsnn.trainer import train
 from tsnn.tester import test
 import pickle
@@ -26,6 +27,9 @@ py train.py -m msft_model -e 1000 -s MSFT -n
 
 Then can go train the same model on something else too!
 py train.py -m msft_model -e 1000 -s AMD
+
+py train.py -m full_model -a -n -e 2000
+py train.py -m full_model -a -t 
 '''
 if __name__ == '__main__':
     parser = ArgumentParser(description='Train your Time-Series NN.')
@@ -35,6 +39,7 @@ if __name__ == '__main__':
     parser.add_argument('--symbol', '-s', type=str, help='Stock ticker symbol to train on.', default='MSFT')
     parser.add_argument('--window', '-w', type=int, default=4)
     parser.add_argument('--test', '-t', action='store_true')
+    #parser.add_argument('--plot', '-p', action='store_true')
     parser.add_argument('--all', '-a', action='store_true', help='Test model on all data.')
     print(MODEL_DIR)
 
@@ -54,7 +59,8 @@ if __name__ == '__main__':
     #     pickle.dump(tsp, f)
 
     if args.new:
-        model = LSTM(num_classes=1, input_size=1, hidden_size=2, num_layers=1)
+        #model = LSTM(num_classes=1, input_size=1, hidden_size=2, num_layers=1)
+        model = LSTM(num_classes=1, input_size=1, hidden_size=20, num_layers=1)
     else:
         model = torch.load(model_fname)
 
@@ -65,14 +71,43 @@ if __name__ == '__main__':
 
         if not args.test:
             for i, symbol in enumerate(symbols):
-                print(f'=== Training on {symbol} ({i+1}/{len(symbols)} ===')
+                print(f'=== Training on {symbol} ({i+1}/{len(symbols)}) ===')
                 df = get_df(symbol)
                 tsp.process(df)
                 train(model, tsp.trainX, tsp.trainY, num_epochs=args.epochs, learning_rate=0.01)
                 torch.save(model, model_fname)
 
-        for symbol in symbols:
-            pass
+        avg_best = 0.0
+        avg_buyhold = 0.0
+        avg_ret = 0.0
+
+        worst_buyhold = math.inf
+        worst_buyhold_symbol = None
+
+        for i, symbol in enumerate(symbols):
+            print(f'=== Testing on {symbol} ({i+1}/{len(symbols)}) ===')
+            df = get_df(symbol)
+            tsp.process(df)
+            best, buyhold, ret = test(model, tsp, plot_results=False)
+
+            if buyhold < worst_buyhold:
+                worst_buyhold = buyhold
+                worst_buyhold_symbol = symbol
+
+            avg_best += best
+            avg_buyhold += buyhold
+            avg_ret += ret
+
+        print('WORST:', worst_buyhold_symbol)
+
+        avg_best /= len(symbols)
+        avg_buyhold /= len(symbols)
+        avg_ret /= len(symbols)
+
+        print('Average best possible return:', avg_best)
+        print('Average buy & hold return:', avg_buyhold)
+        print('Average return using model predictions:', avg_ret)
+
     else:
         df = get_df(args.symbol)
         # Don't train on the last 20% of any of the data that way we can test on something
@@ -85,6 +120,6 @@ if __name__ == '__main__':
         torch.save(model, model_fname)
 
         print('=== Testing ===')
-        test(model, tsp)
+        test(model, tsp, plot_results=True)
 
 
