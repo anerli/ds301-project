@@ -16,10 +16,6 @@ lstm = LSTM(num_classes=1, input_size=1, hidden_size=2, num_layers=1)
 
 train(lstm, tsp.trainX, tsp.trainY, num_epochs=500, learning_rate=0.01)
 
-date_index_adj = tsp.original_index[tsp.window:]
-
-mapper = lambda i: date_index_adj[i]
-
 #test(lstm, tsp.X, tsp.Y, tsp.train_size, tsp.scaler, mapper)
 test(lstm, tsp)
 

@@ -33,7 +33,7 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
     y_pred = predictY.reshape((-1,)).tolist()
     y_actual = actualY.reshape((-1,)).tolist()
     
-    print(y_actual)
+    #print(y_actual)
 
     print('Best possible return:', calculate_return(y_actual, y_actual))
     print('Return from buying and holding:', y_actual[-1] / y_actual[0])
