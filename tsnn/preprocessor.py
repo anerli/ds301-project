@@ -10,10 +10,10 @@ class TimeSeriesPreprocessor:
         self.train_ratio = 1.0 - test_ratio
         self.test_ratio = test_ratio
 
-    def process(self, df):
+    def process(self, df):#, features=['Close']):
         self.original_index = df.index
         df.index = list(range(len(df)))
-        data = df['Close']
+        data = df['Close']#features]
         data = np.array(data)
         # Reshape so shape is (n_samples, n_features) (just one feature)
         data = data.reshape((-1, 1))

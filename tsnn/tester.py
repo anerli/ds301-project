@@ -8,7 +8,7 @@ from .backtester import calculate_return
 
 
 
-def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
+def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor, plot_results=False):
     model.eval()
     predictY = model(tsp.X)
     actualY = tsp.Y
@@ -35,12 +35,18 @@ def test(model: torch.nn.Module, tsp: TimeSeriesPreprocessor):
     
     #print(y_actual)
 
+    best = calculate_return(y_actual, y_actual) 
+    buyhold = y_actual[-1] / y_actual[0]
+    ret = calculate_return(y_pred, y_actual)
+
     print('Best possible return:', calculate_return(y_actual, y_actual))
     print('Return from buying and holding:', y_actual[-1] / y_actual[0])
     print('Return using prediction:', calculate_return(y_pred, y_actual))
     
 
-    plot(predictY, actualY, tsp.train_size, index_map)
+    if plot_results: plot(predictY, actualY, tsp.train_size, index_map)
+
+    return best, buyhold, ret
 
 '''
 index_map: mapping from integers 0,1,2,... to some other index (e.g. a date) for use in plotting 
